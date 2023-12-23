@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "telesolvebot",
+  "private_key_id": "c6d6a63304a591bb78c10a49187972b9a31b4423",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDIn1Z4SriIzAG6\n9gQg85cIW77zca//aWT/SnRfSDWSN0yDA0NLQsRSEk9KVt3BILUjnMBPYjyVor1s\na1aMVY2k+yrUkME7UujZLkVN9+UxV123UFel/E+lEr3YrHT/M3EqzsbaA9F1Qssq\nbXzqeB20xtc98S5f9zQ/8RbBkJrY5Ol5ARoxDK9jbCf7zOSmg5PkwU/oebOxCyv1\niq8jvi6bTdDmEMIEjjNVulkmQLqbBD0Pb9bRmETxqn4y18GE7dediB4UQ4tP3dY5\nX3nZLkxEqxxRfjMJZGIPGLRE9e0sIFRS0wA7tpkmIWG3UBJpFw/KIpkvxfVyqcvW\nW7cRGxjBAgMBAAECggEACphpA4MFZOrKn++fPzLuLo793N3hCs8A+lSZzxsWrTQG\nHUMzr3Vave+L8s6h+TGmL2J3a5ncvkBb2wPTjHzLisOIZbUxZ1XVHfyKGiM18678\nBZLqK3DRr1OikB9nhxTV7LStSX/7H24ZdxJU5GMsmnVdPRRlkRmSpQUxYPlR8ZNp\nYAxoWHVgsA37ziNDpK3Jl/zxxs94KpDU/u65LtcK+Q6chcTyS/wFKRjJ7u448Wgt\nhwCAIkq7KiuAhOiGdpyxnvFKRV7gZlvM9INrzuejDIHlH6qDqngDa1dA6hHeqCAE\nBX3J7F6D5ok4+JorziDL97OD22xYTzMRcQrJfDqPcwKBgQDwrCBEb+oz1nty6leZ\nAGmD0RKhRdZ2axX8r18YwiuznI6sLUNk8jonSUGmiKioDY787/HS85CfEkdjhway\nYEwk4hAJiGbdpJb6rbhjQp4zFkyvVuP69yF5tBcDz32T0qdygDJL5QShcSjTWCl5\nI8Ug3Z3iqfQZtuKMoRJ7Ed5GgwKBgQDVZj7NFgDt6lsW6bXCMR8PUR5Y9FMQjCMM\nwCT/AplDDxlDF7yUzuZDHkNxF6Wd/SVy35LJ7qgwXT+TTMhXSMnE56gRGFtrZIc4\nOSSqs1nfzKem9jdOJpNjYUGM28cRAFIzYRuZ4pCQwh1wUYft4A51jMlI/+smIzNf\nARmpVqvgawKBgQDK6PQTfx/AMLbH/hd4ocZUInNIkS7ti/9vmRPeNebOedI4C7lk\nZGzvLm4xT8qSVUwWqN4DcuKdmrWhjffxcAsCla3bu6qud9Pq6Ygp98KVY9mnguSX\ndMA+cb1tswQ3G0Wd3cOKBT5QNq2q8guVXLkYqoAw2AU7oNuEoVCJflkerQKBgBL+\nQ66rO6/xQOQ8LuI2zwXk+Wd/b3k0j9YNr/1GdO+kA2KWVUGFXLcylVwWd7YlFtUv\nkvgIFs4fLo5kshwarWKqH6pN2a0oSGS3qUzMI76oj29r0KZTBqE8wcHQudoIhkhu\nZy9+G9HWhRo/F3MTkxXhTvUBWiON1H+rMGaDAU87AoGBAJV9QJ7IIhk8UaFqmcp/\nF0qTz/+K9m4dkrBPCApbMIBgZ8pSVH/MT2y2rnifTGhnv0NMWtoSpR3H+wDkLghn\n57rwXOTJ6fZkrtm5H+GmBs3aY2k/XWI5Jt2vv+xLCS8EbOAgtMPT+u8fR5hg/ICE\nuzVavCxG9SPJjyE7MuTurZuA\n-----END PRIVATE KEY-----\n",
+  "client_email": "arc-784@telesolvebot.iam.gserviceaccount.com",
+  "client_id": "115812972128157086603",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/arc-784%40telesolvebot.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
