@@ -56,9 +56,9 @@ def compare(a: Task, b: Task):
     return -1 if date1 < date2 else 1
 
 
-async def get_user_tasks(state: FSMContext, **kwargs):
+async def get_user_tasks(state: FSMContext, dialog_manager: DialogManager, **kwargs):
     data = await state.get_data()
-    tasks = db.get_tasks(data["user_id"])[::-1]
+    tasks = db.get_tasks(dialog_manager.dialog_data["user_id"])
     tasks.sort(key=cmp_to_key(compare))
     return {'tasks': tasks}
 
