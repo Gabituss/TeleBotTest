@@ -171,7 +171,7 @@ async def decline_purchase(callback: CallbackQuery, button: Button, dialog_manag
     await dialog_manager.switch_to(States.main_menu)
 
 
-async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: DialogManager, state: FSMContext):
+async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.start(
         States.after_restart, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
     )
