@@ -13,6 +13,7 @@ from aiogram_dialog.widgets.text import *
 from aiogram_dialog.widgets.input import *
 from aiogram_dialog import Dialog, DialogManager, Window
 from aiogram.fsm.context import FSMContext
+from aiogram_dialog import DialogManager, StartMode, ShowMode
 
 from states import States
 from random import randint
@@ -171,8 +172,10 @@ async def decline_purchase(callback: CallbackQuery, button: Button, dialog_manag
 
 
 async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: DialogManager, state: FSMContext):
+    await dialog_manager.start(
+        States.after_restart, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
+    )
     await state.update_data(user_id=callback.message.chat.id)
-    await dialog_manager.switch_to(States.main_menu)
 
 
 dialog = Dialog(
