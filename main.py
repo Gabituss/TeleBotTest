@@ -111,11 +111,11 @@ async def decline_task(callback: CallbackQuery):
 
 
 async def on_unknown_intent(event: ErrorEvent, state: FSMContext, dialog_manager: DialogManager):
-    print(dialog_manager.event.user_chat_id)
+    # print(event.)
     logging.error("Restarting dialog: %s", event.exception)
-    await state.update_data(user_id=dialog_manager.event.user_chat_id)
+
     await dialog_manager.start(
-        States.main_menu, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
+        States.after_restart, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
     )
 
 

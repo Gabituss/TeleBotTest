@@ -2,6 +2,8 @@ from aiogram.filters.state import State, StatesGroup
 
 
 class States(StatesGroup):
+    after_restart = State()
+
     main_menu = State()
     tasks_menu = State()
     buy_menu = State()
