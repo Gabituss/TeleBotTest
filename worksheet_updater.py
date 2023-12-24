@@ -28,6 +28,12 @@ def compare(a: Task, b: Task):
     return -1 if date1 < date2 else 1
 
 
+def check(task: Task):
+    dt = date.today()
+    date1 = datetime.strptime(task.deadline.split()[0], '%Y-%m-%d')
+
+    return date1 >= dt
+
 class Updater:
     def __init__(self, path, dbpath):
         self.client = pygsheets.authorize(service_file=path)
@@ -45,9 +51,9 @@ class Updater:
         tasks = self.db.get_all_tasks()
         tasks = sorted(tasks, key=cmp_to_key(compare))
         if len(tasks) > 0:
-            tasks3 = list(filter(lambda task: task.approved == 3, tasks))
-            tasks2 = list(filter(lambda task: task.approved == 2, tasks))
-            tasks1 = list(filter(lambda task: task.approved == 1, tasks))
+            tasks3 = list(filter(lambda task: task.approved == 3 and check(task), tasks))
+            tasks2 = list(filter(lambda task: task.approved == 2 and check(task), tasks))
+            tasks1 = list(filter(lambda task: task.approved == 1 and check(task), tasks))
 
             self.wks.update_values('A2', [
                 [
@@ -63,7 +69,7 @@ class Updater:
                 ] for i, task in enumerate(tasks3, 1)
             ])
 
-            self.wks.update_values(f'A{2+len(tasks3)+1}', [
+            self.wks.update_values(f'A{2 + len(tasks3) + 1}', [
                 [
                     self.db.get_test(task.type_id).description,
                     task.deadline,
