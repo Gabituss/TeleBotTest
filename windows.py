@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from functools import cmp_to_key
 
 import aiogram.types.message
@@ -50,8 +50,8 @@ def compare(a: Task, b: Task):
     if a.mark == -1 and b.mark == 0:
         return -1
 
-    date1 = datetime.strptime(a.deadline, '%Y-%m-%d %H:%M')
-    date2 = datetime.strptime(b.deadline, '%Y-%m-%d %H:%M')
+    date1 = datetime.datetime.strptime(a.deadline, '%Y-%m-%d %H:%M')
+    date2 = datetime.datetime.strptime(b.deadline, '%Y-%m-%d %H:%M')
     return -1 if date1 < date2 else 1
 
 
