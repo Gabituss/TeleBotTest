@@ -181,7 +181,8 @@ async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: Di
 
 dialog = Dialog(
     Window(
-        SwitchTo(Const("Меню"), id="menu", on_click=go_to_menu, state=States.main_menu),
+        Const(""),
+        SwitchTo(Const("Меню"), id="menuuu", on_click=go_to_menu, state=States.main_menu),
         state=States.after_restart
     ),
 
