@@ -1,5 +1,5 @@
-import datetime
-from datetime import date
+from datetime import datetime
+from functools import cmp_to_key
 
 import aiogram.types.message
 from aiogram.types import CallbackQuery
@@ -32,9 +32,33 @@ CANCEL_EDIT = SwitchTo(Const("Отменить редактирование"), w
                        state=States.preview, )
 
 
+def compare(a: Task, b: Task):
+    if a == b:
+        return 0
+    if a.approved > b.approved:
+        return -1
+    if a.approved < b.approved:
+        return 1
+    if a.mark > 0 and b.mark > 0:
+        return -1 if a.task_id < b.task_id else 1
+    if a.mark > 0 >= b.mark:
+        return 1
+    if a.mark <= 0 < b.mark:
+        return -1
+    if a.mark == 0 and b.mark == -1:
+        return 1
+    if a.mark == -1 and b.mark == 0:
+        return -1
+
+    date1 = datetime.strptime(a.deadline, '%Y-%m-%d %H:%M')
+    date2 = datetime.strptime(b.deadline, '%Y-%m-%d %H:%M')
+    return -1 if date1 < date2 else 1
+
+
 async def get_user_tasks(state: FSMContext, **kwargs):
     data = await state.get_data()
     tasks = db.get_tasks(data["user_id"])[::-1]
+    tasks.sort(key=cmp_to_key(compare))
     return {'tasks': tasks}
 
 
