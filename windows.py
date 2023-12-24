@@ -172,17 +172,13 @@ async def decline_purchase(callback: CallbackQuery, button: Button, dialog_manag
 
 
 async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: DialogManager, state: FSMContext):
-    pass
-    # await dialog_manager.start(
-    #     States.after_restart, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
-    # )
     await state.update_data(user_id=callback.message.chat.id)
 
 
 dialog = Dialog(
     Window(
-        Const(""),
-        SwitchTo(Const("Меню"), id="menuuu", on_click=go_to_menu, state=States.main_menu),
+        Const("Нажмите на кнопку"),
+        SwitchTo(Const("Меню"), id="menu", on_click=go_to_menu, state=States.main_menu),
         state=States.after_restart
     ),
 
