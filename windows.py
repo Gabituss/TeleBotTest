@@ -175,7 +175,7 @@ async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: Di
     await dialog_manager.start(
         States.after_restart, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
     )
-    await state.update_data(user_id=callback.message.chat.id)
+    # await state.update_data(user_id=callback.message.chat.id)
 
 
 dialog = Dialog(
