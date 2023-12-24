@@ -63,7 +63,7 @@ async def get_user_tasks(state: FSMContext, **kwargs):
     return {'tasks': tasks}
 
 
-async def get_tests_data(state: FSMContext, **kwargs):
+async def get_tests_data(state: FSMContext, dialog_manager: DialogManager, **kwargs):
     tests = db.get_test_list()
     return {'tests': tests}
 
@@ -171,8 +171,8 @@ async def decline_purchase(callback: CallbackQuery, button: Button, dialog_manag
     await dialog_manager.switch_to(States.main_menu)
 
 
-async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: DialogManager, state: FSMContext):
-    await state.update_data(user_id=callback.message.chat.id)
+async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    dialog_manager.dialog_data["user_id"]=callback.message.chat.id
 
 
 dialog = Dialog(
