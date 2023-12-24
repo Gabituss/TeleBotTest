@@ -168,7 +168,7 @@ dialog = Dialog(
             ),
             id="tests_group",
             width=1,
-            height=6,
+            height=10,
         ),
         MAIN_MENU_BTN,
         CANCEL_EDIT,
