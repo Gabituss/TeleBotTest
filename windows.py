@@ -5,6 +5,8 @@ import aiogram.types.message
 from aiogram.types import CallbackQuery
 
 from aiogram import Dispatcher, Bot, F
+from aiogram import types
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import ContentType, Message
 from aiogram_dialog.widgets.kbd import *
 from aiogram_dialog.widgets.text import *
@@ -23,6 +25,7 @@ upd = Updater("telesolve.json", "users.db")
 
 MANAGER_ID = 6416500666
 # MANAGER_ID = 1173441935
+
 FINISHED_KEY = "finished"
 MAIN_MENU_BTN = SwitchTo(Const("Меню"), id="mainb", state=States.main_menu)
 CANCEL_EDIT = SwitchTo(Const("Отменить редактирование"), when=F["dialog_data"][FINISHED_KEY], id="cnl_edt",
@@ -117,15 +120,18 @@ async def add_task(message: Message, widget, dialog_manager: DialogManager, *_):
         approved=2
     ))
 
+    builder = InlineKeyboardBuilder()
+    builder.add(
+        types.InlineKeyboardButton(text="Подтвердить", callback_data=f"approve {dialog_manager.dialog_data['id']}"))
+    builder.add(
+        types.InlineKeyboardButton(text="Отклонить", callback_data=f"decline {dialog_manager.dialog_data['id']}"))
     await message.bot.send_document(MANAGER_ID, dialog_manager.dialog_data["file_id"], caption=
-    f"Заказ от {data['name']} \"{data['description']}\" за {data['cost']}₽\n"
-    f"Введи `/approve {dialog_manager.dialog_data['id']}` чтобы подтвердить заказ\n"
-    f"Введи `/decline {dialog_manager.dialog_data['id']} причина` чтобы отклонить заказ", parse_mode='MarkdownV2')
+    f"Заказ от {data['name']} \"{data['description']}\" за {data['cost']}₽\n", reply_markup=builder.as_markup())
 
     upd.clear()
     upd.update_tasks_list()
 
-    await message.answer("Благодарим Вас за покупку❤️ Тест будет выполнен до конца дедлайна")
+    await message.answer("❤Благодарим Вас за покупку❤️\n\n✍🏼Тест будет выполнен до конца дедлайна✍🏼")
     await dialog_manager.switch_to(States.main_menu)
 
 

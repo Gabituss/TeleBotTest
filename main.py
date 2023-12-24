@@ -2,11 +2,11 @@ import asyncio
 import logging
 
 from aiogram_dialog import setup_dialogs
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.filters import Command
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 
 from aiogram_dialog import DialogManager, StartMode
 
@@ -21,11 +21,15 @@ dp = Dispatcher(storage=MemoryStorage())
 db = Database("users.db")
 upd = worksheet_updater.Updater("telesolve.json", "users.db")
 
+MANAGER_ID = 6416500666
+# MANAGER_ID = 1173441935
+
 
 @dp.message(Command("start"))
 async def start(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    await state.update_data(user_id=message.chat.id)
-    await dialog_manager.start(States.main_menu, mode=StartMode.RESET_STACK)
+    if message.chat.id != MANAGER_ID:
+        await state.update_data(user_id=message.chat.id)
+        await dialog_manager.start(States.main_menu, mode=StartMode.RESET_STACK)
 
 
 @dp.message(SolverFilter(), Command("update"))
@@ -44,24 +48,18 @@ async def erase(message: Message, state: FSMContext, dialog_manager: DialogManag
 @dp.message(SolverFilter(), Command("start_task"))
 async def start_task(message: Message, state: FSMContext, dialog_manager: DialogManager):
     task_id = int(message.text.split()[1])
-    cell = message.text.split()[2]
-    task = db.get_task(task_id)
-    test = db.get_test(task.type_id)
-
     db.update_task_mark(task_id, 0)
 
     upd.clear()
     upd.update_tasks_list()
 
-    # await message.bot.send_message(task.user_id, f"Заказ \"{test.description}: {task.test_name}\" принят в работу")
     await message.answer("OK")
 
 
 @dp.message(SolverFilter(), Command("finish_task"))
 async def finish_task(message: Message, state: FSMContext, dialog_manager: DialogManager):
     task_id = int(message.text.split()[1])
-    cell = message.text.split()[2]
-    mark = int(message.text.split()[3])
+    mark = int(message.text.split()[2])
     task = db.get_task(task_id)
     test = db.get_test(task.type_id)
 
@@ -75,9 +73,9 @@ async def finish_task(message: Message, state: FSMContext, dialog_manager: Dialo
     await message.answer("OK")
 
 
-@dp.message(SolverFilter(), Command("approve"))
-async def approve_task(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    task_id = int(message.text.split()[1])
+@dp.callback_query(F.data.startswith("approve"))
+async def approve_task(callback: CallbackQuery):
+    task_id = int(callback.data.split()[1])
     task = db.get_task(task_id)
     test = db.get_test(task.type_id)
 
@@ -86,15 +84,15 @@ async def approve_task(message: Message, state: FSMContext, dialog_manager: Dial
     upd.clear()
     upd.update_tasks_list()
 
-    await message.bot.send_message(task.user_id, text=
+    await callback.message.bot.send_message(task.user_id, text=
     f"Заказ \"{test.description}\" подтвержден")
-    await message.answer("OK")
+    await callback.message.answer("OK")
+    await callback.message.delete()
 
 
-@dp.message(SolverFilter(), Command("decline"))
-async def decline_task(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    task_id = int(message.text.split()[1])
-    reason = message.text.split()[2]
+@dp.callback_query(F.data.startswith("decline"))
+async def decline_task(callback: CallbackQuery):
+    task_id = int(callback.data.split()[1])
     task = db.get_task(task_id)
     test = db.get_test(task.type_id)
     db.update_task_approve_status(task_id, 1)
@@ -102,9 +100,10 @@ async def decline_task(message: Message, state: FSMContext, dialog_manager: Dial
     upd.clear()
     upd.update_tasks_list()
 
-    await message.bot.send_message(task.user_id,
-                                   f"Заказ \"{test.description}: {task.test_name}\" отклонен по причине: " + reason)
-    await message.answer("OK")
+    await callback.bot.send_message(task.user_id,
+                                   f"Заказ \"{test.description}: {task.test_name}\" отклонен, обратитесь к менеджеру чтобы узнать причину")
+    await callback.answer("OK")
+    await callback.message.delete()
 
 
 async def main():

@@ -58,8 +58,8 @@ class Updater:
                     task.login_data.split()[1],
                     task.mark,
                     task.approved,
-                    f"/start_task {task.task_id} F{i + 1}",
-                    f"/finish_task {task.task_id} F{i + 1} оценка",
+                    f"/start_task {task.task_id}",
+                    f"/finish_task {task.task_id} оценка",
                 ] for i, task in enumerate(tasks3, 1)
             ])
 
@@ -72,8 +72,8 @@ class Updater:
                     task.login_data.split()[1],
                     task.mark,
                     task.approved,
-                    f"/start_task {task.task_id} F{i + 1}",
-                    f"/finish_task {task.task_id} F{i + 1} оценка",
+                    f"/start_task {task.task_id}",
+                    f"/finish_task {task.task_id} оценка",
                 ] for i, task in enumerate(tasks2, 1)
             ])
 
@@ -86,7 +86,7 @@ class Updater:
                     task.login_data.split()[1],
                     task.mark,
                     task.approved,
-                    f"/start_task {task.task_id} F{i + 1}",
-                    f"/finish_task {task.task_id} F{i + 1} оценка",
+                    f"/start_task {task.task_id}",
+                    f"/finish_task {task.task_id} оценка",
                 ] for i, task in enumerate(tasks1, 1)
             ])
