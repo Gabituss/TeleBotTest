@@ -31,8 +31,8 @@ MANAGER_ID = 6416500666
 
 @dp.message(Command("start"))
 async def start(message: Message, state: FSMContext, dialog_manager: DialogManager):
+    await state.update_data(user_id=message.chat.id)
     if message.chat.id != MANAGER_ID:
-        await state.update_data(user_id=message.chat.id)
         await dialog_manager.start(States.main_menu, mode=StartMode.RESET_STACK)
 
 
@@ -110,8 +110,8 @@ async def decline_task(callback: CallbackQuery):
     await callback.message.delete()
 
 
-async def on_unknown_intent(event, dialog_manager: DialogManager):
-    """Example of handling UnknownIntent Error and starting new dialog."""
+async def on_unknown_intent(event, state: FSMContext, dialog_manager: DialogManager):
+    print(type(event))
     logging.error("Restarting dialog: %s", event.exception)
     await dialog_manager.start(
         States.main_menu, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
