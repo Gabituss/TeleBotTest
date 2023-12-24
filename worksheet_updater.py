@@ -30,7 +30,7 @@ def compare(a: Task, b: Task):
 
 def check(task: Task):
     dt = date.today()
-    date1 = datetime.strptime(task.deadline.split()[0], '%Y-%m-%d')
+    date1 = date.fromisoformat(task.deadline.split()[0])
 
     return date1 >= dt
 
