@@ -1,12 +1,13 @@
 import asyncio
 import logging
 
-from aiogram_dialog import setup_dialogs
+from aiogram_dialog import setup_dialogs, ShowMode
 from aiogram import Bot, Dispatcher, F
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.filters import Command
+from aiogram.filters import Command, ExceptionTypeFilter
 from aiogram.types import Message, CallbackQuery
+from aiogram_dialog.api.exceptions import UnknownIntent, UnknownState
 
 from aiogram_dialog import DialogManager, StartMode
 
@@ -22,6 +23,8 @@ db = Database("users.db")
 upd = worksheet_updater.Updater("telesolve.json", "users.db")
 
 MANAGER_ID = 6416500666
+
+
 # MANAGER_ID = 1173441935
 
 
@@ -101,12 +104,21 @@ async def decline_task(callback: CallbackQuery):
     upd.update_tasks_list()
 
     await callback.bot.send_message(task.user_id,
-                                   f"Заказ \"{test.description}: {task.test_name}\" отклонен, обратитесь к менеджеру чтобы узнать причину")
+                                    f"Заказ \"{test.description}: {task.test_name}\" отклонен, обратитесь к менеджеру чтобы узнать причину")
     await callback.answer("OK")
     await callback.message.delete()
 
 
+async def on_unknown_intent(event, dialog_manager: DialogManager):
+    """Example of handling UnknownIntent Error and starting new dialog."""
+    logging.error("Restarting dialog: %s", event.exception)
+    await dialog_manager.start(
+        States.main_menu, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
+    )
+
+
 async def main():
+    dp.errors.register(on_unknown_intent, ExceptionTypeFilter(UnknownIntent))
     dp.include_router(windows.dialog)
     setup_dialogs(dp)
 
