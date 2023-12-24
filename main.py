@@ -33,7 +33,7 @@ MANAGER_ID = 6416500666
 async def start(message: Message, state: FSMContext, dialog_manager: DialogManager):
     await state.update_data(user_id=message.chat.id)
     if message.chat.id != MANAGER_ID:
-        await dialog_manager.start(States.main_menu, mode=StartMode.RESET_STACK)
+        await dialog_manager.start(States.after_restart, mode=StartMode.RESET_STACK)
 
 
 @dp.message(SolverFilter(), Command("update"))
