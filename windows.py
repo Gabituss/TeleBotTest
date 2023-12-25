@@ -164,7 +164,9 @@ async def add_task(message: Message, widget, dialog_manager: DialogManager, *_):
 
     await message.answer("❤Благодарим Вас за покупку❤️\n\n✍🏼Тест будет выполнен до конца дедлайна✍🏼")
     await dialog_manager.switch_to(States.main_menu)
-    upd.update_tasks_list()
+
+    if len(db.get_all_tasks()) % 5 == 0:
+        upd.update_tasks_list()
 
 
 async def receipt_handler(message: Message, message_input: MessageInput, manager: DialogManager):
@@ -285,7 +287,7 @@ dialog = Dialog(
             "🧾 Переведите деньги на **** и <b>отправьте файлом</b> чек об оплате 🧾\n\n"
             "👩🏻‍💼 Заказ будет ждать подтвердения менеджера 👩🏻‍💼\n\n"
             "🔔 Как только он будет подтвержден, Вам прийдет уведомление 🔔\n\n"
-            "⌛️ Если в течении n часов не будет подтверждения, обратитесь к <a href=\"https://t.me/MANAGER_MTTS\">менеджеру</a> ⌛️"
+            "⌛️ Если в течение n часов не будет подтверждения, обратитесь к <a href=\"https://t.me/MANAGER_MTTS\">менеджеру</a> ⌛️"
         ),
         MessageInput(receipt_handler, content_types=[ContentType.DOCUMENT]),
         getter=get_order_data,

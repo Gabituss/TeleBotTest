@@ -85,7 +85,14 @@ async def approve_task(callback: CallbackQuery):
         document=callback.message.document.file_id,
         caption=f"Заказ от {task.user_name} \"{test.description}\" подтвержден"
     )
-    upd.update_tasks_list()
+
+    tasks = [db.get_task(task_idd) for task_idd in db.get_all_tasks()]
+    cnt = 0
+    for tsk in tasks:
+        cnt += tsk.approved != 2
+
+    if cnt % 5 == 0:
+        upd.update_tasks_list()
 
 
 @dp.callback_query(F.data.startswith("decline"))
@@ -103,7 +110,14 @@ async def decline_task(callback: CallbackQuery):
         caption=f"Заказ от {task.user_name} \"{test.description}\" отклонен"
     )
     await callback.message.delete()
-    upd.update_tasks_list()
+
+    tasks = [db.get_task(task_idd) for task_idd in db.get_all_tasks()]
+    cnt = 0
+    for tsk in tasks:
+        cnt += tsk.approved != 2
+
+    if cnt % 5 == 0:
+        upd.update_tasks_list()
 
 
 async def on_unknown_intent(event: ErrorEvent, state: FSMContext, dialog_manager: DialogManager):
