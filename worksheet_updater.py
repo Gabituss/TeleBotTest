@@ -70,6 +70,7 @@ class Updater:
         tasks = self.db.get_all_tasks()
         tasks = sorted(tasks, key=cmp_to_key(compare))
         if len(tasks) > 0:
+            types = dict()
             tasks3 = list(filter(lambda task: task.approved == 3 and check(task), tasks))
             tasks2 = list(filter(lambda task: task.approved == 2 and check(task), tasks))
             tasks1 = list(filter(lambda task: task.approved == 1 and check(task), tasks))

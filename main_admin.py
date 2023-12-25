@@ -23,10 +23,6 @@ upd = worksheet_updater.Updater("telesolve.json", "users.db")
 
 @dp.message(Command("start"))
 async def start(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    tasks = db.get_all_tasks()
-    for task in tasks:
-        db.remove_task(task.task_id)
-
     await state.update_data(user_id=message.chat.id)
     await dialog_manager.start(States.menu, mode=StartMode.RESET_STACK)
 
