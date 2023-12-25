@@ -24,6 +24,12 @@ db = Database(DB_PATH)
 upd = worksheet_updater.Updater("telesolve.json", DB_PATH)
 
 
+@dp.message(SolverFilter(), Command("update"))
+async def update(message: Message, state: FSMContext, dialog_manager: DialogManager):
+    upd.update_tasks_list()
+    await message.answer("OK")
+
+
 @dp.message(Command("start"))
 async def start(message: Message, state: FSMContext, dialog_manager: DialogManager):
     await state.update_data(user_id=message.chat.id)
@@ -34,12 +40,6 @@ async def start(message: Message, state: FSMContext, dialog_manager: DialogManag
 async def menu(message: Message, state: FSMContext, dialog_manager: DialogManager):
     await state.update_data(user_id=message.chat.id)
     await dialog_manager.start(States.after_restart, mode=StartMode.RESET_STACK)
-
-
-@dp.message(SolverFilter(), Command("update"))
-async def update(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    upd.update_tasks_list()
-    await message.answer("OK")
 
 
 @dp.message(SolverFilter(), Command("erase"))
