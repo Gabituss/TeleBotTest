@@ -2,12 +2,14 @@ import asyncio
 import logging
 import worksheet_updater
 
-from aiogram_dialog import setup_dialogs
+from aiogram_dialog import setup_dialogs, ShowMode
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.filters import Command
+from aiogram.filters import Command, ExceptionTypeFilter
 from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery, ErrorEvent
+from aiogram_dialog.api.exceptions import UnknownIntent, UnknownState
 
 from aiogram_dialog import DialogManager, StartMode
 
@@ -28,7 +30,15 @@ async def start(message: Message, state: FSMContext, dialog_manager: DialogManag
     await dialog_manager.start(States.menu, mode=StartMode.RESET_STACK)
 
 
+async def on_unknown_intent(event: ErrorEvent, state: FSMContext, dialog_manager: DialogManager):
+    logging.error("Restarting dialog: %s", event.exception)
+    await dialog_manager.start(
+        States.menu, mode=StartMode.RESET_STACK, show_mode=ShowMode.SEND,
+    )
+
+
 async def main():
+    dp.errors.register(on_unknown_intent, ExceptionTypeFilter(UnknownIntent))
     dp.include_router(windows_admin.dialog)
     setup_dialogs(dp)
 
