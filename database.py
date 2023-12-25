@@ -67,8 +67,8 @@ class Database:
             test_name TEXT,
             login_data TEXT,
             deadline TEXT,
-            mark INTEGER
-            user_name TEXT
+            mark INTEGER,
+            user_name TEXT,
             approved INT
         )
         ''')  # Create Table of user tasks
@@ -228,5 +228,6 @@ if __name__ == '__main__':
     from datetime import datetime
 
     db = Database("users.db")
+    db.add_user(User(1173441935, "Габитов Шамиль"))
     for task in db.get_all_tasks():
         db.remove_task(task.task_id)
