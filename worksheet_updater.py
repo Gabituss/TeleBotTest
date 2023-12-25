@@ -1,6 +1,6 @@
 import pygsheets
 from pygsheets.exceptions import WorksheetNotFound
-
+from googleapiclient.errors import HttpError
 import numpy as np
 from database import *
 from functools import cmp_to_key
@@ -38,7 +38,21 @@ def check(task: Task):
 
 
 def clear(sheet):
-    sheet.update_values('A2', [["" for i in range(10)] for j in range(1000)])
+    sheet.clear()
+
+
+def convert(task: Task):
+    return [
+        task.test_name,
+        task.deadline,
+        task.user_name,
+        task.login_data.split()[0],
+        task.login_data.split()[1],
+        task.mark,
+        task.approved,
+        f"/start_task {task.task_id}",
+        f"/finish_task {task.task_id} оценка"
+    ]
 
 
 class Updater:
@@ -53,7 +67,7 @@ class Updater:
 
         sheet.update_values(f'A{start}', [
             [
-                self.db.get_test(task.type_id).description,
+                task.test_name,
                 task.deadline,
                 task.user_name,
                 task.login_data.split()[0],
@@ -65,6 +79,29 @@ class Updater:
             ] for task in tasks
         ])
 
+    def create_worksheet(self, tp):
+        wks = self.sh.add_worksheet(tp, rows=2000)
+        wks.add_conditional_formatting('G2', f'G1500', 'NUMBER_BETWEEN',
+                                       {'background_color': {'green': 1}},
+                                       ['3', '3'])
+        wks.add_conditional_formatting('G2', f'G1500', 'NUMBER_BETWEEN',
+                                       {'background_color': {'green': 1, 'red': 1}},
+                                       ['2', '2'])
+        wks.add_conditional_formatting('G2', f'G1500', 'NUMBER_BETWEEN',
+                                       {'background_color': {'red': 1}},
+                                       ['1', '1'])
+        wks.add_conditional_formatting('F2', f'F1500', 'NUMBER_BETWEEN',
+                                       {'background_color': {'green': 1}},
+                                       ['1', '5'])
+        wks.add_conditional_formatting('F2', f'F1500', 'NUMBER_BETWEEN',
+                                       {'background_color': {'green': 1, 'red': 1}},
+                                       ['0', '0'])
+        wks.add_conditional_formatting('F2', f'F1500', 'NUMBER_BETWEEN',
+                                       {'background_color': {'red': 1}},
+                                       ['-1', '-1'])
+
+        return wks
+
     def update_tasks_list(self):
         tasks = self.db.get_all_tasks()
         tasks = sorted(tasks, key=cmp_to_key(compare))
@@ -74,19 +111,23 @@ class Updater:
                 continue
 
             types["главное"] = types.get("главное", []) + [task]
-            types[task.test_name] = types.get(task.test_name, []) + [task]
+            types[task.test_name.split()[0]] = types.get(task.test_name.split()[0], []) + [task]
 
-        for tp, task in types.items():
+        for tp, tasks in types.items():
             try:
                 wks = self.sh.worksheet_by_title(tp)
             except WorksheetNotFound:
-                wks = self.sh.add_worksheet(tp)
+                wks = self.create_worksheet(tp)
+            except HttpError:
+                wks = self.create_worksheet(tp)
+
+            clear(wks)
             wks.update_values('A1', [["Тип теста", "Дедлайн", "ФИО", "Логин", "Пароль", "Оценка", "Подтвержден",
                                       "Команда для начала работы", "Команда для конца работы"]])
-            clear(wks)
-            tasks3 = list(filter(lambda t: t.approved == 3 and check(t), task))
-            tasks2 = list(filter(lambda t: t.approved == 2 and check(t), task))
-            tasks1 = list(filter(lambda t: t.approved == 1 and check(t), task))
+
+            tasks3 = list(filter(lambda t: t.approved == 3 and check(t), tasks))
+            tasks2 = list(filter(lambda t: t.approved == 2 and check(t), tasks))
+            tasks1 = list(filter(lambda t: t.approved == 1 and check(t), tasks))
 
             self.add_tasks(tasks3, wks, 2)
             self.add_tasks(tasks2, wks, 3 + len(tasks3))

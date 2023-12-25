@@ -22,17 +22,14 @@ dp = Dispatcher(storage=MemoryStorage())
 db = Database("users.db")
 upd = worksheet_updater.Updater("telesolve.json", "users.db")
 
-MANAGER_ID = 6416500666
-
-
-# MANAGER_ID = 1173441935
+# MANAGER_ID = 6416500666
+MANAGER_ID = 1173441935
 
 
 @dp.message(Command("start"))
 async def start(message: Message, state: FSMContext, dialog_manager: DialogManager):
     await state.update_data(user_id=message.chat.id)
-    if message.chat.id != MANAGER_ID:
-        await dialog_manager.start(States.after_restart, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(States.after_restart, mode=StartMode.RESET_STACK)
 
 
 @dp.message(SolverFilter(), Command("update"))
@@ -51,7 +48,6 @@ async def start_task(message: Message, state: FSMContext, dialog_manager: Dialog
     task_id = int(message.text.split()[1])
     db.update_task_mark(task_id, 0)
 
-
     await message.answer("OK")
     upd.update_tasks_list()
 
@@ -64,7 +60,6 @@ async def finish_task(message: Message, state: FSMContext, dialog_manager: Dialo
     test = db.get_test(task.type_id)
 
     db.update_task_mark(task_id, mark)
-
 
     await message.bot.send_message(task.user_id,
                                    f"Заказ \"{test.description}: {task.test_name}\" выполнен, получена оценка \"{mark}\"")
@@ -79,7 +74,6 @@ async def approve_task(callback: CallbackQuery):
     test = db.get_test(task.type_id)
 
     db.update_task_approve_status(task_id, 3)
-
 
     await callback.message.bot.send_message(task.user_id, text=
     f"Заказ \"{test.description}\" подтвержден")

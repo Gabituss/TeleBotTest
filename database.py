@@ -1,3 +1,4 @@
+import random
 import sqlite3 as sql
 from datetime import date
 from random import randint
@@ -204,6 +205,32 @@ class Database:
 
 
 if __name__ == '__main__':
+    from itertools import product
+    from datetime import datetime
+
     db = Database("users.db")
 
-    print(db.get_tasks(1173441935))
+    for task in db.get_all_tasks():
+        db.remove_task(task.task_id)
+
+    # users = [
+    #     "Габитов Шамиль Ильдарович",
+    #     "Габитов Ильвир Ильдарович",
+    #     "ФИО",
+    #     "Человек С Фамилией",
+    #     "Родина Мария Кирилловна",
+    #     "Митрошина Настасья Филипповна",
+    #     "Тамазян Сурен Телемаки",
+    #     "Бабиджонов Улукбек Насруллоджонович",
+    # ]
+    # tests = [
+    #     71668719,
+    #     488159257,
+    #     600954572
+    # ]
+    # for prod in product(users, tests):
+    #     name, type_id = prod
+    #     now = datetime.now()
+    #     deadline = f'2023-12-{random.randint(26, 31)} {random.randint(10, 23)}:{random.randint(10, 59)}'
+    #     db.add_task(Task(type_id, gen_id(), gen_id(), db.get_test(type_id).description, "логин пароль", deadline,
+    #                      user_name=name))

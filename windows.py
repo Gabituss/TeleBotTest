@@ -24,8 +24,8 @@ from worksheet_updater import Updater
 db = Database("users.db")
 upd = Updater("telesolve.json", "users.db")
 
-MANAGER_ID = 6416500666
-# MANAGER_ID = 1173441935
+# MANAGER_ID = 6416500666
+MANAGER_ID = 1173441935
 
 FINISHED_KEY = "finished"
 MAIN_MENU_BTN = SwitchTo(Const("Меню"), id="mainb", state=States.main_menu)
