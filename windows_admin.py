@@ -105,6 +105,7 @@ async def change_time_deltas(event, widget, dialog_manager: DialogManager, *_):
     if len(end.split(":")[0]) < 2:
         end = "0" + end
     db.update_time_deltas(start, end)
+    await dialog_manager.switch_to(States.menu)
 
 MAIN_MENU_BTN = SwitchTo(
     Const("Меню"),
