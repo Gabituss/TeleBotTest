@@ -34,6 +34,7 @@ def check(task: Task):
 
     return date1 >= dt
 
+
 class Updater:
     def __init__(self, path, dbpath):
         self.client = pygsheets.authorize(service_file=path)
@@ -47,6 +48,21 @@ class Updater:
     def update_cell_mark(self, mark, cell):
         self.wks.update_value(cell, mark)
 
+    def add_tasks(self, tasks, sheet, start):
+        sheet.update_values(f'A{2}', [
+            [
+                self.db.get_test(task.type_id).description,
+                task.deadline,
+                task.user_name,
+                task.login_data.split()[0],
+                task.login_data.split()[1],
+                task.mark,
+                task.approved,
+                f"/start_task {task.task_id}",
+                f"/finish_task {task.task_id} оценка",
+            ] for task in tasks
+        ])
+
     def update_tasks_list(self):
         tasks = self.db.get_all_tasks()
         tasks = sorted(tasks, key=cmp_to_key(compare))
@@ -55,44 +71,6 @@ class Updater:
             tasks2 = list(filter(lambda task: task.approved == 2 and check(task), tasks))
             tasks1 = list(filter(lambda task: task.approved == 1 and check(task), tasks))
 
-            self.wks.update_values('A2', [
-                [
-                    self.db.get_test(task.type_id).description,
-                    task.deadline,
-                    task.user_name,
-                    task.login_data.split()[0],
-                    task.login_data.split()[1],
-                    task.mark,
-                    task.approved,
-                    f"/start_task {task.task_id}",
-                    f"/finish_task {task.task_id} оценка",
-                ] for i, task in enumerate(tasks3, 1)
-            ])
-
-            self.wks.update_values(f'A{2 + len(tasks3) + 1}', [
-                [
-                    self.db.get_test(task.type_id).description,
-                    task.deadline,
-                    task.user_name,
-                    task.login_data.split()[0],
-                    task.login_data.split()[1],
-                    task.mark,
-                    task.approved,
-                    f"/start_task {task.task_id}",
-                    f"/finish_task {task.task_id} оценка",
-                ] for i, task in enumerate(tasks2, 1)
-            ])
-
-            self.wks.update_values(f'A{2 + len(tasks3) + len(tasks2) + 2}', [
-                [
-                    self.db.get_test(task.type_id).description,
-                    task.deadline,
-                    task.user_name,
-                    task.login_data.split()[0],
-                    task.login_data.split()[1],
-                    task.mark,
-                    task.approved,
-                    f"/start_task {task.task_id}",
-                    f"/finish_task {task.task_id} оценка",
-                ] for i, task in enumerate(tasks1, 1)
-            ])
+            self.add_tasks(tasks3, self.wks, 2)
+            self.add_tasks(tasks2, self.wks, 3 + len(tasks3))
+            self.add_tasks(tasks1, self.wks, 4 + len(tasks3) + len(tasks2))
