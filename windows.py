@@ -105,6 +105,8 @@ async def on_option_selected(callback: CallbackQuery, widget: Any, manager: Dial
         manager.dialog_data["chosen_option"] = int(item_id.split()[1])
         await manager.switch_to(States.write_name)
     else:
+        await manager.close_manager()
+        await manager.start(States.after_restart)
         await callback.message.answer("Мы сейчас не принимаем заказы 🙁")
         await manager.switch_to(States.after_restart)
 
