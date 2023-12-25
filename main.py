@@ -99,7 +99,7 @@ async def decline_task(callback: CallbackQuery):
     db.update_task_approve_status(task_id, 1)
 
     await callback.bot.send_message(task.user_id,
-                                    f"Заказ \"{test.description}: {task.test_name}\" отклонен ❌, обратитесь к менеджеру чтобы узнать причину")
+                                    f"Заказ {task.test_name}\" отклонен ❌, обратитесь к менеджеру чтобы узнать причину")
     await callback.message.bot.send_document(
         chat_id=callback.message.chat.id,
         document=callback.message.document.file_id,
