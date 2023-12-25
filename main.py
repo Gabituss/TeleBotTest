@@ -22,8 +22,8 @@ dp = Dispatcher(storage=MemoryStorage())
 db = Database("users.db")
 upd = worksheet_updater.Updater("telesolve.json", "users.db")
 
-# MANAGER_ID = 6416500666
-MANAGER_ID = 1173441935
+MANAGER_ID = 6416500666
+# MANAGER_ID = 1173441935
 
 
 @dp.message(Command("start"))
