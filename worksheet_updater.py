@@ -49,7 +49,10 @@ class Updater:
         self.wks.update_value(cell, mark)
 
     def add_tasks(self, tasks, sheet, start):
-        sheet.update_values(f'A{2}', [
+        if len(tasks) <= 0:
+            return
+
+        sheet.update_values(f'A{start}', [
             [
                 self.db.get_test(task.type_id).description,
                 task.deadline,
