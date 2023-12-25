@@ -228,3 +228,5 @@ if __name__ == '__main__':
     from datetime import datetime
 
     db = Database("users.db")
+    for task in db.get_all_tasks():
+        db.remove_task(task.task_id)
