@@ -99,7 +99,7 @@ async def on_click(callback: CallbackQuery, widget: Any, manager: DialogManager,
 
 
 async def change_time_deltas(event, widget, dialog_manager: DialogManager, *_):
-    start, end = dialog_manager.find("write_time").get_value().split(":")
+    start, end = dialog_manager.find("write_time").get_value().split("-")
     if len(start.split(":")[0]) < 2:
         start = "0" + start
     if len(end.split(":")[0]) < 2:

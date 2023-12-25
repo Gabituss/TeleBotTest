@@ -106,7 +106,7 @@ async def on_option_selected(callback: CallbackQuery, widget: Any, manager: Dial
         await manager.switch_to(States.write_name)
     else:
         await callback.message.answer("Мы сейчас не принимаем заказы 🙁")
-        await manager.switch_to(States.main_menu)
+        await manager.switch_to(States.after_restart)
 
 
 async def on_date_click(callback: CallbackQuery, widget, dialog_manager: DialogManager, selected_date: date):
@@ -188,7 +188,7 @@ async def open_menu(callback: CallbackQuery, widget: Any, manager: DialogManager
         await manager.switch_to(States.buy_menu)
     else:
         await callback.message.answer("Мы сейчас не принимаем заказы 🙁")
-
+        await manager.switch_to(States.main_menu)
 
 dialog = Dialog(
     Window(
