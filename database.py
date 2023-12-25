@@ -1,6 +1,6 @@
 import random
 import sqlite3 as sql
-from datetime import date
+from datetime import date, datetime, time
 from random import randint
 
 
@@ -84,7 +84,26 @@ class Database:
             id INTEGER PRIMARY KEY
         )
         ''')  # Create Table of solvers
+        self.connection.execute('''
+        CREATE TABLE IF NOT EXISTS TimeDeltas (
+            type TEXT PRIMARY KEY,
+            time TEXT
+        )''')
 
+        self.connection.execute('INSERT OR IGNORE INTO TimeDeltas (type, time) VALUES (?, ?)', ("from", "06:00"))
+        self.connection.execute('INSERT OR IGNORE INTO TimeDeltas (type, time) VALUES (?, ?)', ("to", "18:00"))
+        self.connection.commit()
+
+    def get_time_deltas(self):
+        self.cursor.execute('SELECT time FROM TimeDeltas')
+        vals = list(map(lambda x: time.fromisoformat(x[0]), self.cursor.fetchall()))
+        if vals[0] > vals[1]:
+            vals[0], vals[1] = vals[1], vals[0]
+        return vals
+
+    def update_time_deltas(self, start, end):
+        self.connection.execute('UPDATE TimeDeltas SET time=? WHERE type=?', (start, "from"))
+        self.connection.execute('UPDATE TimeDeltas SET time=? WHERE type=?', (end, "to"))
         self.connection.commit()
 
     # region user
@@ -209,28 +228,3 @@ if __name__ == '__main__':
     from datetime import datetime
 
     db = Database("users.db")
-
-    for task in db.get_all_tasks():
-        db.remove_task(task.task_id)
-
-    # users = [
-    #     "Габитов Шамиль Ильдарович",
-    #     "Габитов Ильвир Ильдарович",
-    #     "ФИО",
-    #     "Человек С Фамилией",
-    #     "Родина Мария Кирилловна",
-    #     "Митрошина Настасья Филипповна",
-    #     "Тамазян Сурен Телемаки",
-    #     "Бабиджонов Улукбек Насруллоджонович",
-    # ]
-    # tests = [
-    #     71668719,
-    #     488159257,
-    #     600954572
-    # ]
-    # for prod in product(users, tests):
-    #     name, type_id = prod
-    #     now = datetime.now()
-    #     deadline = f'2023-12-{random.randint(26, 31)} {random.randint(10, 23)}:{random.randint(10, 59)}'
-    #     db.add_task(Task(type_id, gen_id(), gen_id(), db.get_test(type_id).description, "логин пароль", deadline,
-    #                      user_name=name))

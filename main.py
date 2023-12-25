@@ -13,7 +13,7 @@ from aiogram_dialog import DialogManager, StartMode
 
 import windows
 import worksheet_updater
-from filters import SolverFilter
+from filters import SolverFilter, EnabledFilter
 from database import *
 from states import States
 
@@ -24,9 +24,10 @@ upd = worksheet_updater.Updater("telesolve.json", "users.db")
 
 MANAGER_ID = 6416500666
 # MANAGER_ID = 1173441935
+ENABLED = True
 
 
-@dp.message(Command("start"))
+@dp.message(EnabledFilter(ENABLED), Command("start"))
 async def start(message: Message, state: FSMContext, dialog_manager: DialogManager):
     await state.update_data(user_id=message.chat.id)
     await dialog_manager.start(States.after_restart, mode=StartMode.RESET_STACK)
@@ -34,7 +35,10 @@ async def start(message: Message, state: FSMContext, dialog_manager: DialogManag
 
 @dp.message(SolverFilter(), Command("update"))
 async def update(message: Message, state: FSMContext, dialog_manager: DialogManager):
+    global ENABLED
+
     upd.update_tasks_list()
+    ENABLED = False
     await message.answer("OK")
 
 

@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime, time, date
+
 from functools import cmp_to_key
 
 import aiogram.types.message
@@ -70,7 +71,7 @@ async def get_tests_data(state: FSMContext, dialog_manager: DialogManager, **kwa
 
 def check_time(tm):
     try:
-        datetime.time.fromisoformat(tm)
+        time.fromisoformat(tm)
         return True
     except ValueError:
         return False
@@ -104,7 +105,7 @@ async def on_option_selected(callback: CallbackQuery, widget: Any, manager: Dial
 
 async def on_date_click(callback: CallbackQuery, widget, dialog_manager: DialogManager, selected_date: date):
     dialog_manager.dialog_data["date"] = selected_date
-    if selected_date >= datetime.date.today():
+    if selected_date >= date.today():
         await next_or_end(0, 0, dialog_manager)
 
 
@@ -153,7 +154,6 @@ async def add_task(message: Message, widget, dialog_manager: DialogManager, *_):
     await message.bot.send_document(MANAGER_ID, dialog_manager.dialog_data["file_id"], caption=
     f"Заказ от {data['name']} \"{data['description']}\" за {data['cost']}₽\n", reply_markup=builder.as_markup())
 
-
     await message.answer("❤Благодарим Вас за покупку❤️\n\n✍🏼Тест будет выполнен до конца дедлайна✍🏼")
     await dialog_manager.switch_to(States.main_menu)
     upd.update_tasks_list()
@@ -171,7 +171,17 @@ async def decline_purchase(callback: CallbackQuery, button: Button, dialog_manag
 
 
 async def go_to_menu(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    dialog_manager.dialog_data["user_id"]=callback.message.chat.id
+    dialog_manager.dialog_data["user_id"] = callback.message.chat.id
+
+
+async def open_menu(callback: CallbackQuery, widget: Any, manager: DialogManager):
+    now = datetime.now().time()
+    start, end = db.get_time_deltas()
+
+    if start <= now <= end:
+        await manager.switch_to(States.buy_menu)
+    else:
+        await callback.message.answer("Бот не работает в это время")
 
 
 dialog = Dialog(
@@ -183,7 +193,7 @@ dialog = Dialog(
 
     Window(
         Const("Меню"),
-        SwitchTo(Const("💎 Заказать тест 💎"), id="buy", state=States.buy_menu),
+        Button(Const("💎 Заказать тест 💎"), id="buy", on_click=open_menu),
         SwitchTo(Const("⏳ Мои заказы ⏳"), id="tasks", state=States.tasks_menu),
         Url(Const("✏️ Менеджер ✏️"), Const('https://t.me/MANAGER_MTTS')),
         Url(Const("📕️ Канал 📕️"), Const('https://t.me/MGMSU_TestTech_Squad')),
