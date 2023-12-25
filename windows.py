@@ -99,9 +99,15 @@ async def get_order_data(dialog_manager: DialogManager, **kwargs):
 
 
 async def on_option_selected(callback: CallbackQuery, widget: Any, manager: DialogManager, item_id: str):
-    manager.dialog_data["chosen_option"] = int(item_id.split()[1])
-    await manager.switch_to(States.write_name)
+    now = datetime.now().time()
+    start, end = db.get_time_deltas()
 
+    if start <= now <= end:
+        manager.dialog_data["chosen_option"] = int(item_id.split()[1])
+        await manager.switch_to(States.write_name)
+    else:
+        await callback.message.answer("Мы сейчас не принимаем заказы")
+        await manager.switch_to(States.main_menu)
 
 async def on_date_click(callback: CallbackQuery, widget, dialog_manager: DialogManager, selected_date: date):
     dialog_manager.dialog_data["date"] = selected_date
