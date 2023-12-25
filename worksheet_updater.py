@@ -1,4 +1,6 @@
 import pygsheets
+from pygsheets.exceptions import WorksheetNotFound
+
 import numpy as np
 from database import *
 from functools import cmp_to_key
@@ -35,18 +37,15 @@ def check(task: Task):
     return date1 >= dt
 
 
+def clear(sheet):
+    sheet.update_values('A2', [["" for i in range(10)] for j in range(1000)])
+
+
 class Updater:
     def __init__(self, path, dbpath):
         self.client = pygsheets.authorize(service_file=path)
         self.sh = self.client.open("tasks")
-        self.wks: pygsheets.worksheet.Worksheet = self.sh.sheet1
         self.db = Database(dbpath)
-
-    def clear(self):
-        self.wks.update_values('A2', [["" for i in range(10)] for j in range(1000)])
-
-    def update_cell_mark(self, mark, cell):
-        self.wks.update_value(cell, mark)
 
     def add_tasks(self, tasks, sheet, start):
         if len(tasks) <= 0:
@@ -69,12 +68,26 @@ class Updater:
     def update_tasks_list(self):
         tasks = self.db.get_all_tasks()
         tasks = sorted(tasks, key=cmp_to_key(compare))
-        if len(tasks) > 0:
-            types = dict()
-            tasks3 = list(filter(lambda task: task.approved == 3 and check(task), tasks))
-            tasks2 = list(filter(lambda task: task.approved == 2 and check(task), tasks))
-            tasks1 = list(filter(lambda task: task.approved == 1 and check(task), tasks))
+        types = dict()
+        for task in tasks:
+            if not check(task):
+                continue
 
-            self.add_tasks(tasks3, self.wks, 2)
-            self.add_tasks(tasks2, self.wks, 3 + len(tasks3))
-            self.add_tasks(tasks1, self.wks, 4 + len(tasks3) + len(tasks2))
+            types["главное"] = types.get("главное", []) + [task]
+            types[task.test_name] = types.get(task.test_name, []) + [task]
+
+        for tp, task in types.items():
+            try:
+                wks = self.sh.worksheet_by_title(tp)
+            except WorksheetNotFound:
+                wks = self.sh.add_worksheet(tp)
+            wks.update_values('A1', [["Тип теста", "Дедлайн", "ФИО", "Логин", "Пароль", "Оценка", "Подтвержден",
+                                      "Команда для начала работы", "Команда для конца работы"]])
+            clear(wks)
+            tasks3 = list(filter(lambda t: t.approved == 3 and check(t), task))
+            tasks2 = list(filter(lambda t: t.approved == 2 and check(t), task))
+            tasks1 = list(filter(lambda t: t.approved == 1 and check(t), task))
+
+            self.add_tasks(tasks3, wks, 2)
+            self.add_tasks(tasks2, wks, 3 + len(tasks3))
+            self.add_tasks(tasks1, wks, 4 + len(tasks3) + len(tasks2))

@@ -153,11 +153,10 @@ async def add_task(message: Message, widget, dialog_manager: DialogManager, *_):
     await message.bot.send_document(MANAGER_ID, dialog_manager.dialog_data["file_id"], caption=
     f"Заказ от {data['name']} \"{data['description']}\" за {data['cost']}₽\n", reply_markup=builder.as_markup())
 
-    upd.clear()
-    upd.update_tasks_list()
 
     await message.answer("❤Благодарим Вас за покупку❤️\n\n✍🏼Тест будет выполнен до конца дедлайна✍🏼")
     await dialog_manager.switch_to(States.main_menu)
+    upd.update_tasks_list()
 
 
 async def receipt_handler(message: Message, message_input: MessageInput, manager: DialogManager):

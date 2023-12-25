@@ -1,7 +1,6 @@
 import asyncio
 import logging
 
-
 from aiogram_dialog import setup_dialogs, ShowMode
 from aiogram import Bot, Dispatcher, F
 from aiogram.fsm.context import FSMContext
@@ -38,14 +37,12 @@ async def start(message: Message, state: FSMContext, dialog_manager: DialogManag
 
 @dp.message(SolverFilter(), Command("update"))
 async def update(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    upd.clear()
     upd.update_tasks_list()
     await message.answer("OK")
 
 
 @dp.message(SolverFilter(), Command("erase"))
 async def erase(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    upd.clear()
     await message.answer("OK")
 
 
@@ -54,10 +51,9 @@ async def start_task(message: Message, state: FSMContext, dialog_manager: Dialog
     task_id = int(message.text.split()[1])
     db.update_task_mark(task_id, 0)
 
-    upd.clear()
-    upd.update_tasks_list()
 
     await message.answer("OK")
+    upd.update_tasks_list()
 
 
 @dp.message(SolverFilter(), Command("finish_task"))
@@ -69,12 +65,11 @@ async def finish_task(message: Message, state: FSMContext, dialog_manager: Dialo
 
     db.update_task_mark(task_id, mark)
 
-    upd.clear()
-    upd.update_tasks_list()
 
     await message.bot.send_message(task.user_id,
                                    f"Заказ \"{test.description}: {task.test_name}\" выполнен, получена оценка \"{mark}\"")
     await message.answer("OK")
+    upd.update_tasks_list()
 
 
 @dp.callback_query(F.data.startswith("approve"))
@@ -85,13 +80,12 @@ async def approve_task(callback: CallbackQuery):
 
     db.update_task_approve_status(task_id, 3)
 
-    upd.clear()
-    upd.update_tasks_list()
 
     await callback.message.bot.send_message(task.user_id, text=
     f"Заказ \"{test.description}\" подтвержден")
     await callback.message.answer("OK")
     await callback.message.delete()
+    upd.update_tasks_list()
 
 
 @dp.callback_query(F.data.startswith("decline"))
@@ -101,13 +95,11 @@ async def decline_task(callback: CallbackQuery):
     test = db.get_test(task.type_id)
     db.update_task_approve_status(task_id, 1)
 
-    upd.clear()
-    upd.update_tasks_list()
-
     await callback.bot.send_message(task.user_id,
                                     f"Заказ \"{test.description}: {task.test_name}\" отклонен, обратитесь к менеджеру чтобы узнать причину")
     await callback.answer("OK")
     await callback.message.delete()
+    upd.update_tasks_list()
 
 
 async def on_unknown_intent(event: ErrorEvent, state: FSMContext, dialog_manager: DialogManager):
