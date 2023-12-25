@@ -38,7 +38,7 @@ def check(task: Task):
 
 
 def clear(sheet):
-    sheet.clear()
+    sheet.clear(fields="*")
 
 
 def convert(task: Task):
