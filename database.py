@@ -31,9 +31,9 @@ class Task:
         self.deadline = deadline
         self.mark = mark
         if mark == -1:
-            self.as_str = f"Тест \"{test_name}\" до {self.deadline}"
+            self.as_str = f"Тест \"{test_name}\" до {self.deadline} ⏳"
         else:
-            self.as_str = f"Тест \"{test_name}\" решен, оценка - {mark}"
+            self.as_str = f"Тест \"{test_name}\" решен, оценка - {mark} ✅"
         self.approved = approved
 
 

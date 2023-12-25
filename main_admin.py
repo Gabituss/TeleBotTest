@@ -14,8 +14,9 @@ from aiogram_dialog import DialogManager, StartMode
 import windows_admin
 from states_admin import States
 from database import *
+from config import *
 
-bot = Bot(token="6458439593:AAGYANG7ZuYvHS979j5cGWq19f1mZ34C-eA")
+bot = Bot(token=ADMIN_BOT_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
 db = Database("users.db")
 upd = worksheet_updater.Updater("telesolve.json", "users.db")

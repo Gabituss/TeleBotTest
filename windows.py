@@ -5,6 +5,7 @@ from functools import cmp_to_key
 import aiogram.types.message
 from aiogram.types import CallbackQuery
 
+from config import *
 from aiogram import Dispatcher, Bot, F
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
@@ -25,12 +26,8 @@ from worksheet_updater import Updater
 db = Database("users.db")
 upd = Updater("telesolve.json", "users.db")
 
-# MANAGER_ID = 6416500666
-MANAGER_ID = 1173441935
-
-FINISHED_KEY = "finished"
 MAIN_MENU_BTN = SwitchTo(Const("Меню"), id="mainb", state=States.main_menu)
-CANCEL_EDIT = SwitchTo(Const("Отменить редактирование"), when=F["dialog_data"][FINISHED_KEY], id="cnl_edt",
+CANCEL_EDIT = SwitchTo(Const("Отменить редактирование"), when=F["dialog_data"]["finished"], id="cnl_edt",
                        state=States.preview, )
 
 
@@ -58,7 +55,6 @@ def compare(a: Task, b: Task):
 
 
 async def get_user_tasks(state: FSMContext, dialog_manager: DialogManager, **kwargs):
-    data = await state.get_data()
     tasks = db.get_tasks(dialog_manager.dialog_data["user_id"])
     tasks.sort(key=cmp_to_key(compare))
     return {'tasks': tasks}
@@ -78,7 +74,7 @@ def check_time(tm):
 
 
 async def get_order_data(dialog_manager: DialogManager, **kwargs):
-    dialog_manager.dialog_data[FINISHED_KEY] = True
+    dialog_manager.dialog_data["finished"] = True
     deadline: date = dialog_manager.dialog_data["date"]
 
     data = dict()
@@ -90,7 +86,7 @@ async def get_order_data(dialog_manager: DialogManager, **kwargs):
         data["date"] = deadline.strftime('%Y-%m-%d') + " " + dialog_manager.find("write_deadline_time").get_value()
         dialog_manager.dialog_data["correct"] = True
     else:
-        data["date"] = "Исправьте время дедлайна"
+        data["date"] = "Исправьте время дедлайна ❌"
         dialog_manager.dialog_data["correct"] = False
 
     data["cost"] = db.get_test(dialog_manager.dialog_data["chosen_option"]).cost
@@ -106,8 +102,9 @@ async def on_option_selected(callback: CallbackQuery, widget: Any, manager: Dial
         manager.dialog_data["chosen_option"] = int(item_id.split()[1])
         await manager.switch_to(States.write_name)
     else:
-        await callback.message.answer("Мы сейчас не принимаем заказы")
+        await callback.message.answer("Мы сейчас не принимаем заказы 🙁")
         await manager.switch_to(States.main_menu)
+
 
 async def on_date_click(callback: CallbackQuery, widget, dialog_manager: DialogManager, selected_date: date):
     dialog_manager.dialog_data["date"] = selected_date
@@ -116,14 +113,14 @@ async def on_date_click(callback: CallbackQuery, widget, dialog_manager: DialogM
 
 
 async def next_or_end(event, widget, dialog_manager: DialogManager, *_):
-    if dialog_manager.dialog_data.get(FINISHED_KEY):
+    if dialog_manager.dialog_data.get("finished"):
         await dialog_manager.switch_to(States.preview)
     else:
         await dialog_manager.next()
 
 
 async def confirm_purchase(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    dialog_manager.dialog_data[FINISHED_KEY] = False
+    dialog_manager.dialog_data["finished"] = False
     data = await get_order_data(dialog_manager)
     dialog_manager.dialog_data["id"] = gen_id()
 
@@ -172,7 +169,7 @@ async def receipt_handler(message: Message, message_input: MessageInput, manager
 
 
 async def decline_purchase(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    dialog_manager.dialog_data[FINISHED_KEY] = False
+    dialog_manager.dialog_data["finished"] = False
     await dialog_manager.switch_to(States.main_menu)
 
 
@@ -187,12 +184,12 @@ async def open_menu(callback: CallbackQuery, widget: Any, manager: DialogManager
     if start <= now <= end:
         await manager.switch_to(States.buy_menu)
     else:
-        await callback.message.answer("Мы сейчас не принимаем заказы")
+        await callback.message.answer("Мы сейчас не принимаем заказы 🙁")
 
 
 dialog = Dialog(
     Window(
-        Const("Нажмите на кнопку"),
+        Const("Нажмите на кнопку чтобы перейти в меню"),
         SwitchTo(Const("Меню"), id="menu", on_click=go_to_menu, state=States.main_menu),
         state=States.after_restart
     ),
@@ -226,7 +223,7 @@ dialog = Dialog(
         state=States.buy_menu,
     ),
     Window(
-        Const("Здесь Вы можете ознакомиться с Вашими заказами"),
+        Const("Здесь Вы можете ознакомиться с Вашими заказами 🗒"),
         ScrollingGroup(
             Select(
                 Format("{item.as_str}"),
@@ -255,7 +252,7 @@ dialog = Dialog(
         state=States.write_deadline
     ),
     Window(
-        Const("Введите время дедлайна в формате час:минута, например \"16:30\""),
+        Const("Введите время дедлайна в формате час:минута, например \"16:30\" или \"09:30\" (МСК)"),
         TextInput(id="write_deadline_time", on_success=next_or_end),
         CANCEL_EDIT,
         state=States.write_deadline_time
@@ -291,12 +288,12 @@ dialog = Dialog(
         parse_mode="html",
     ),
     Window(
-        Const("Введите логин"),
+        Const("Введите логин 👨‍💻"),
         TextInput(id="write_login", on_success=write_login),
         state=States.write_login
     ),
     Window(
-        Const("Введите пароль"),
+        Const("Введите пароль 🔑"),
         TextInput(id="write_password", on_success=add_task),
         state=States.write_password
     )
