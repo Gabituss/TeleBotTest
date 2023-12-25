@@ -107,7 +107,7 @@ async def on_option_selected(callback: CallbackQuery, widget: Any, manager: Dial
     else:
         await manager.close_manager()
         await manager.start(States.after_restart)
-        await callback.message.answer("Мы сейчас не принимаем заказы 🙁")
+        await callback.message.answer("Мы сейчас не принимаем заказы 🙁, введите /menu")
         await manager.switch_to(States.after_restart)
 
 
@@ -189,7 +189,7 @@ async def open_menu(callback: CallbackQuery, widget: Any, manager: DialogManager
     if start <= now <= end:
         await manager.switch_to(States.buy_menu)
     else:
-        await callback.message.answer("Мы сейчас не принимаем заказы 🙁")
+        await callback.message.answer("Мы сейчас не принимаем заказы 🙁, введите /menu")
         await manager.switch_to(States.after_restart)
 
 dialog = Dialog(

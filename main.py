@@ -38,10 +38,7 @@ async def menu(message: Message, state: FSMContext, dialog_manager: DialogManage
 
 @dp.message(SolverFilter(), Command("update"))
 async def update(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    global ENABLED
-
     upd.update_tasks_list()
-    ENABLED = False
     await message.answer("OK")
 
 
