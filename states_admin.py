@@ -13,3 +13,4 @@ class States(StatesGroup):
     user_tasks = State()
     add_solver = State()
     remove_solver = State()
+    write_working_time = State()

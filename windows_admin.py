@@ -98,6 +98,14 @@ async def on_click(callback: CallbackQuery, widget: Any, manager: DialogManager,
     await manager.switch_to(States.change_option)
 
 
+async def change_time_deltas(event, widget, dialog_manager: DialogManager, *_):
+    start, end = dialog_manager.find("write_time").get_value().split(":")
+    if len(start.split(":")[0]) < 2:
+        start = "0" + start
+    if len(end.split(":")[0]) < 2:
+        end = "0" + end
+    db.update_time_deltas(start, end)
+
 MAIN_MENU_BTN = SwitchTo(
     Const("Меню"),
     id="mainb",
@@ -111,6 +119,7 @@ dialog = Dialog(
         SwitchTo(Const("Менеджмент пользователей"), id="users", state=States.users),
         SwitchTo(Const("Добавить решалу"), id="solver", state=States.add_solver),
         SwitchTo(Const("Удалить решалу"), id="remove_solver", state=States.remove_solver),
+        SwitchTo(Const("Изменить время работы"), id="change_time", state=States.write_working_time),
         state=States.menu
     ),
 
@@ -209,5 +218,11 @@ dialog = Dialog(
         Const("Введи id решалы"),
         TextInput(id="solverid", on_success=remove_solver),
         state=States.remove_solver
+    ),
+
+    Window(
+        Const("Введи время работы бота например: \"6:00-8:30\" или \"10:45-18:00\""),
+        TextInput(id="write_time", on_success=change_time_deltas),
+        state=States.write_working_time
     )
 )

@@ -82,6 +82,9 @@ async def get_order_data(dialog_manager: DialogManager, **kwargs):
     data["name"] = dialog_manager.find("write_name").get_value()
     data["description"] = db.get_test(dialog_manager.dialog_data["chosen_option"]).description
     tm = dialog_manager.find("write_deadline_time").get_value()
+    if len(tm.split(":")[0]) < 2:
+        tm = "0" + tm
+
     if check_time(tm):
         data["date"] = deadline.strftime('%Y-%m-%d') + " " + dialog_manager.find("write_deadline_time").get_value()
         dialog_manager.dialog_data["correct"] = True
