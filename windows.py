@@ -181,7 +181,7 @@ async def open_menu(callback: CallbackQuery, widget: Any, manager: DialogManager
     if start <= now <= end:
         await manager.switch_to(States.buy_menu)
     else:
-        await callback.message.answer("Бот не работает в это время")
+        await callback.message.answer("Мы сейчас не принимаем заказы")
 
 
 dialog = Dialog(
