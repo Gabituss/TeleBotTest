@@ -86,7 +86,7 @@ async def approve_task(callback: CallbackQuery):
         caption=f"Заказ от {task.user_name} \"{test.description}\" подтвержден"
     )
 
-    tasks = [db.get_task(task_idd) for task_idd in db.get_all_tasks()]
+    tasks = db.get_all_tasks()
     cnt = 0
     for tsk in tasks:
         cnt += tsk.approved != 2
@@ -111,7 +111,7 @@ async def decline_task(callback: CallbackQuery):
     )
     await callback.message.delete()
 
-    tasks = [db.get_task(task_idd) for task_idd in db.get_all_tasks()]
+    tasks = db.get_all_tasks()
     cnt = 0
     for tsk in tasks:
         cnt += tsk.approved != 2
