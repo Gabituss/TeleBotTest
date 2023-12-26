@@ -71,6 +71,17 @@ async def finish_task(message: Message, state: FSMContext, dialog_manager: Dialo
     upd.update_tasks_list()
 
 
+@dp.message(SolverFilter(), Command("write"))
+async def write_to_user(message: Message, state: FSMContext, dialog_manager: DialogManager):
+    user_id = int(message.text.split()[1])
+    task_id = int(message.text.split()[2])
+    text = " ".join(message.text.split()[3:])
+
+    task = db.get_task(task_id)
+    await message.bot.send_message(user_id, f"Сообщение по поводу заказа \"{task.test_name}\" с id={task_id}:\n{text}")
+    await message.answer("OK")
+
+
 @dp.callback_query(F.data.startswith("approve"))
 async def approve_task(callback: CallbackQuery):
     task_id = int(callback.data.split()[1])
