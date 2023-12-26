@@ -66,7 +66,7 @@ async def finish_task(message: Message, state: FSMContext, dialog_manager: Dialo
     db.update_task_mark(task_id, mark)
 
     await message.bot.send_message(task.user_id,
-                                   f"Заказ \"{test.description}: {task.test_name}\" выполнен, получена оценка \"{mark}\" ✨")
+                                   f"Заказ \"{test.description}: {task.test_name}\" c id={task.task_id} выполнен, получена оценка \"{mark}\" ✨")
     await message.answer("OK")
     upd.update_tasks_list()
 
@@ -90,11 +90,11 @@ async def approve_task(callback: CallbackQuery):
 
     db.update_task_approve_status(task_id, 3)
 
-    await callback.message.bot.send_message(task.user_id, text=f"Заказ \"{test.description}\" подтвержден ✅")
+    await callback.message.bot.send_message(task.user_id, text=f"Заказ \"{test.description}\" c id={task.task_id} подтвержден ✅")
     await callback.message.bot.send_document(
         chat_id=callback.message.chat.id,
         document=callback.message.document.file_id,
-        caption=f"Заказ от {task.user_name} \"{test.description}\" подтвержден"
+        caption=f"Заказ от {task.user_name} \"{test.description}\" c id={task.task_id} подтвержден"
     )
 
     tasks = db.get_all_tasks()
@@ -114,11 +114,11 @@ async def decline_task(callback: CallbackQuery):
     db.update_task_approve_status(task_id, 1)
 
     await callback.bot.send_message(task.user_id,
-                                    f"Заказ {task.test_name}\" отклонен ❌, обратитесь к менеджеру чтобы узнать причину")
+                                    f"Заказ {task.test_name}\" c id={task.task_id} отклонен ❌, обратитесь к менеджеру чтобы узнать причину")
     await callback.message.bot.send_document(
         chat_id=callback.message.chat.id,
         document=callback.message.document.file_id,
-        caption=f"Заказ от {task.user_name} \"{test.description}\" отклонен"
+        caption=f"Заказ от {task.user_name} \"{test.description}\" c id={task.task_id} отклонен"
     )
     await callback.message.delete()
 
