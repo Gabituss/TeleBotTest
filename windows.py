@@ -164,7 +164,7 @@ async def add_task(message: Message, widget, dialog_manager: DialogManager, *_):
 
     await message.answer(f"❤Благодарим Вас за покупку❤️\n\n✍🏼Тест будет выполнен до конца дедлайна✍🏼\n"
                          f"Название заказа: {db.get_test(dialog_manager.dialog_data['chosen_option']).description}\n"
-                         f"id заказа - {dialog_manager.dialog_data['id']}")
+                         f"id заказа: {dialog_manager.dialog_data['id']}")
 
     await dialog_manager.switch_to(States.main_menu)
 
