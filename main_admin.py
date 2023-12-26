@@ -17,6 +17,7 @@ import windows_admin
 from states_admin import States
 from database import *
 from config import *
+from filters import SolverFilter
 
 bot = Bot(token=ADMIN_BOT_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
@@ -24,7 +25,7 @@ db = Database("users.db")
 upd = worksheet_updater.Updater("telesolve.json", "users.db")
 
 
-@dp.message(Command("start"))
+@dp.message(SolverFilter(), Command("start"))
 async def start(message: Message, state: FSMContext, dialog_manager: DialogManager):
     await state.update_data(user_id=message.chat.id)
     await dialog_manager.start(States.menu, mode=StartMode.RESET_STACK)
