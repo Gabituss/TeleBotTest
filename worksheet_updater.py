@@ -76,6 +76,7 @@ class Updater:
                 task.approved,
                 f"/start_task {task.task_id}",
                 f"/finish_task {task.task_id} оценка",
+                f"/write {task.user_id} {task.task_id} текст",
             ] for task in tasks
         ])
 
@@ -123,7 +124,7 @@ class Updater:
 
             clear(wks)
             wks.update_values('A1', [["Тип теста", "Дедлайн", "ФИО", "Логин", "Пароль", "Оценка", "Подтвержден",
-                                      "Команда для начала работы", "Команда для конца работы"]])
+                                      "Команда для начала работы", "Команда для конца работы", "Написать пользователю"]])
 
             tasks3 = list(filter(lambda t: t.approved == 3 and check(t), tasks))
             tasks2 = list(filter(lambda t: t.approved == 2 and check(t), tasks))
