@@ -264,7 +264,6 @@ dialog = Dialog(
             height=10,
         ),
         MAIN_MENU_BTN,
-        CANCEL_EDIT,
         getter=get_tests_data,
         state=States.buy_menu,
     ),

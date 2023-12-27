@@ -125,6 +125,7 @@ class Updater:
 
             if len(tasks) == 0:
                 continue
+
             try:
                 wks = self.sh.worksheet_by_title(tp)
             except WorksheetNotFound or HttpError:
