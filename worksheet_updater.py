@@ -116,7 +116,7 @@ class Updater:
             types[task.test_name.split()[0]] = types.get(task.test_name.split()[0], []) + [task]
 
         for wks in self.sh.worksheets():
-            if wks.title != "empty" and len(types[wks.title]) == 0:
+            if wks.title != "empty" and len(types.get(wks.title, [])) == 0:
                 self.sh.del_worksheet(wks.title)
 
         for tp in self.db.get_test_list():
