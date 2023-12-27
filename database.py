@@ -30,7 +30,7 @@ class Task:
         self.login_data = login_data
         self.deadline = deadline
         self.mark = mark
-        if mark == -1:
+        if mark <= 0:
             self.as_str = f"Тест \"{test_name}\" до {self.deadline} ⏳"
         else:
             self.as_str = f"Тест \"{test_name}\" решен, оценка - {mark} ✅"
