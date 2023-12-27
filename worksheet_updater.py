@@ -119,15 +119,17 @@ class Updater:
             if wks.title != "empty" and len(types.get(wks.title, [])) == 0:
                 self.sh.del_worksheet(wks)
 
-        for typ in self.db.get_test_list():
+        for typ in self.db.get_test_list() + [Test(-1, 1, "главное")]:
             tp = typ.description.split()[0]
+            tasks = types.get(tp,[])
 
+            if len(tasks) == 0:
+                continue
             try:
                 wks = self.sh.worksheet_by_title(tp)
             except WorksheetNotFound or HttpError:
                 wks = self.create_worksheet(tp)
 
-            tasks = types.get(tp,[])
 
             clear(wks)
             wks.update_values('A1', [["Тип теста", "Дедлайн", "ФИО", "Логин", "Пароль", "Оценка", "Подтвержден",
