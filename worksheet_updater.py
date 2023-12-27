@@ -114,7 +114,7 @@ class Updater:
 
             types["главное"] = types.get("главное", []) + [task]
             types[task.test_name.split()[0]] = types.get(task.test_name.split()[0], []) + [task]
-
+        print(types)
         for wks in self.sh.worksheets():
             if wks.title != "empty" and len(types.get(wks.title, [])) == 0:
                 self.sh.del_worksheet(wks)
