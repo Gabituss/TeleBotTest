@@ -167,6 +167,14 @@ class Database:
              task.user_name, task.approved))
         self.connection.commit()
 
+    def update_task(self, task_id, task: Task):
+        self.connection.execute('''
+        UPDATE Tasks SET type_id=(?), task_id=(?), user_id=(?), test_name=(?),login_data=(?),deadline=(?),mark=(?),user_name=(?),approved=(?)
+        WHERE task_id=(?)
+        ''', (task.type_id, task.task_id, task.user_id, task.test_name, task.login_data, task.deadline, task.mark,
+              task.user_name, task.approved, task_id))
+        self.connection.commit()
+
     def remove_task(self, task_id):
         self.connection.execute('DELETE FROM Tasks WHERE task_id=(?)', (task_id,))
         self.connection.commit()
@@ -228,6 +236,3 @@ if __name__ == '__main__':
     from datetime import datetime
 
     db = Database("users.db")
-    db.add_user(User(1173441935, "Габитов Шамиль"))
-    for task in db.get_all_tasks():
-        db.remove_task(task.task_id)
