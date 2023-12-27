@@ -136,8 +136,8 @@ class Database:
     # endregion
     # region test
     def add_test(self, test: Test):
-        self.connection.execute('INSERT INTO Tests (test_id, cost, description) VALUES (?, ?, ?)',
-                                (test.test_id, test.cost, test.description))
+        self.connection.execute('INSERT INTO Tests (test_id, cost, description, available) VALUES (?, ?, ?, ?)',
+                                (test.test_id, test.cost, test.description, test.available))
         self.connection.commit()
 
     def remove_test(self, test_id):
