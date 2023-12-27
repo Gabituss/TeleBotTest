@@ -61,12 +61,11 @@ async def finish_task(message: Message, state: FSMContext, dialog_manager: Dialo
     task_id = int(message.text.split()[1])
     mark = int(message.text.split()[2])
     task = db.get_task(task_id)
-    test = db.get_test(task.type_id)
 
     db.update_task_mark(task_id, mark)
 
     await message.bot.send_message(task.user_id,
-                                   f"Заказ \"{test.description}: {task.test_name}\" c id={task.task_id} выполнен, получена оценка \"{mark}\" ✨")
+                                   f"Заказ \"{task.test_name}\" c id={task.task_id} выполнен, получена оценка \"{mark}\" ✨")
     await message.answer("OK")
     upd.update_tasks_list()
 
@@ -80,6 +79,7 @@ async def write_to_user(message: Message, state: FSMContext, dialog_manager: Dia
     await message.bot.send_message(task.user_id,
                                    f"Сообщение по поводу заказа \"{task.test_name}\" с id={task_id}:\n{text}")
     await message.answer("OK")
+
 
 @dp.callback_query(F.data.startswith("approve"))
 async def approve_task(callback: CallbackQuery):
@@ -97,13 +97,7 @@ async def approve_task(callback: CallbackQuery):
         caption=f"Заказ от {task.user_name} \"{test.description}\" c id={task.task_id} подтвержден"
     )
 
-    tasks = db.get_all_tasks()
-    cnt = 0
-    for tsk in tasks:
-        cnt += tsk.approved != 2
-
-    if cnt % 5 == 0:
-        upd.update_tasks_list()
+    upd.update_tasks_list()
 
 
 @dp.callback_query(F.data.startswith("decline"))
@@ -123,12 +117,7 @@ async def decline_task(callback: CallbackQuery):
     await callback.message.delete()
 
     tasks = db.get_all_tasks()
-    cnt = 0
-    for tsk in tasks:
-        cnt += tsk.approved != 2
-
-    if cnt % 5 == 0:
-        upd.update_tasks_list()
+    upd.update_tasks_list()
 
 
 async def on_unknown_intent(event: ErrorEvent, state: FSMContext, dialog_manager: DialogManager):

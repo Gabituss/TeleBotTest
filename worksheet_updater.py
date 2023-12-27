@@ -94,7 +94,7 @@ class Updater:
                                        ['1', '1'])
         wks.add_conditional_formatting('F2', f'F1500', 'NUMBER_BETWEEN',
                                        {'background_color': {'green': 1}},
-                                       ['1', '5'])
+                                       ['1', '1000'])
         wks.add_conditional_formatting('F2', f'F1500', 'NUMBER_BETWEEN',
                                        {'background_color': {'green': 1, 'red': 1}},
                                        ['0', '0'])
