@@ -114,12 +114,14 @@ class Updater:
 
             types["главное"] = types.get("главное", []) + [task]
             types[task.test_name.split()[0]] = types.get(task.test_name.split()[0], []) + [task]
-        print(types)
+
         for wks in self.sh.worksheets():
             if wks.title != "empty" and len(types.get(wks.title, [])) == 0:
                 self.sh.del_worksheet(wks)
 
-        for tp in self.db.get_test_list():
+        for typ in self.db.get_test_list():
+            tp = typ.description.split()[0]
+
             try:
                 wks = self.sh.worksheet_by_title(tp)
             except WorksheetNotFound or HttpError:
