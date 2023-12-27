@@ -1,5 +1,6 @@
 import pygsheets
 from pygsheets.exceptions import WorksheetNotFound
+from pygsheets import Worksheet
 from googleapiclient.errors import HttpError
 import numpy as np
 from database import *
@@ -114,7 +115,10 @@ class Updater:
             types["главное"] = types.get("главное", []) + [task]
             types[task.test_name.split()[0]] = types.get(task.test_name.split()[0], []) + [task]
 
-        print(self.sh.worksheets())
+        for wks in self.sh.worksheets():
+            if wks.title != "empty" and len(types[wks.title]) == 0:
+                self.sh.del_worksheet(wks.title)
+
         for tp in self.db.get_test_list():
             try:
                 wks = self.sh.worksheet_by_title(tp)
@@ -125,7 +129,8 @@ class Updater:
 
             clear(wks)
             wks.update_values('A1', [["Тип теста", "Дедлайн", "ФИО", "Логин", "Пароль", "Оценка", "Подтвержден",
-                                      "Команда для начала работы", "Команда для конца работы", "Написать пользователю"]])
+                                      "Команда для начала работы", "Команда для конца работы",
+                                      "Написать пользователю"]])
 
             tasks3 = list(filter(lambda t: t.approved == 3 and check(t), tasks))
             tasks2 = list(filter(lambda t: t.approved == 2 and check(t), tasks))
