@@ -77,7 +77,7 @@ class Database:
         CREATE TABLE IF NOT EXISTS Tests (
             test_id INTEGER PRIMARY KEY,
             cost INTEGER,
-            description TEXT
+            description TEXT,
             available INT
         )
         ''')  # Create Table of tests
@@ -156,7 +156,7 @@ class Database:
         return Test(test[0], test[1], test[2])
 
     def get_test_list(self):
-        self.cursor.execute('SELECT * FROM Tests WHERE avaiable!=0')
+        self.cursor.execute('SELECT * FROM Tests WHERE available!=0')
         tests = list(map(lambda x: Test(*x), self.cursor.fetchall()))
         return tests
 
