@@ -127,7 +127,7 @@ class Updater:
             except WorksheetNotFound or HttpError:
                 wks = self.create_worksheet(tp)
 
-            tasks = types[tp]
+            tasks = types.get(tp,[])
 
             clear(wks)
             wks.update_values('A1', [["Тип теста", "Дедлайн", "ФИО", "Логин", "Пароль", "Оценка", "Подтвержден",
