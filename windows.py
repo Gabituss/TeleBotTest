@@ -341,7 +341,7 @@ dialog = Dialog(
         SwitchTo(Const("Изменить логин"), state=States.change_login, id="change_login"),
         SwitchTo(Const("Изменить пароль"), state=States.change_password, id="change_password"),
         SwitchTo(Const("Назад"), state=States.tasks_menu, id="back"),
-        getter=get_order_data,
+        getter=task_data_getter,
         state=States.view_selected,
         parse_mode="html",
     )
