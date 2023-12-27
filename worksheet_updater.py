@@ -117,7 +117,7 @@ class Updater:
 
         for wks in self.sh.worksheets():
             if wks.title != "empty" and len(types.get(wks.title, [])) == 0:
-                self.sh.del_worksheet(wks.title)
+                self.sh.del_worksheet(wks)
 
         for tp in self.db.get_test_list():
             try:
