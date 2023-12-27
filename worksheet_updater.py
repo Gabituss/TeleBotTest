@@ -144,3 +144,5 @@ class Updater:
             self.add_tasks(tasks3, wks, 2)
             self.add_tasks(tasks2, wks, 3 + len(tasks3))
             self.add_tasks(tasks1, wks, 4 + len(tasks3) + len(tasks2))
+
+            wks.adjust_column_width("A","J")
