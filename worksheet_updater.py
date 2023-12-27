@@ -76,7 +76,7 @@ class Updater:
                 task.approved,
                 f"/start_task {task.task_id}",
                 f"/finish_task {task.task_id} оценка",
-                f"/write {task.user_id} {task.task_id} текст",
+                f"/write {task.task_id} текст",
             ] for task in tasks
         ])
 

@@ -16,3 +16,7 @@ class States(StatesGroup):
     write_password = State()
     preview = State()
     pay = State()
+
+    change_password = State()
+    change_login = State()
+    view_selected = State()

@@ -160,7 +160,8 @@ async def add_task(message: Message, widget, dialog_manager: DialogManager, *_):
     builder.add(
         types.InlineKeyboardButton(text="Отклонить", callback_data=f"decline {dialog_manager.dialog_data['id']}"))
     await message.bot.send_document(MANAGER_ID, dialog_manager.dialog_data["file_id"], caption=
-    f"Заказ от {data['name']} \"{data['description']}\" за {data['cost']}₽\n c id={dialog_manager.dialog_data['id']}", reply_markup=builder.as_markup())
+    f"Заказ от {data['name']} \"{data['description']}\" за {data['cost']}₽\n c id={dialog_manager.dialog_data['id']}",
+                                    reply_markup=builder.as_markup())
 
     await message.answer(f"❤Благодарим Вас за покупку❤️\n\n✍🏼Тест будет выполнен до конца дедлайна✍🏼\n"
                          f"Название заказа: {db.get_test(dialog_manager.dialog_data['chosen_option']).description}\n"
@@ -196,6 +197,25 @@ async def open_menu(callback: CallbackQuery, widget: Any, manager: DialogManager
     else:
         await callback.message.answer("Мы сейчас не принимаем заказы 🙁, введите /menu")
         await manager.switch_to(States.after_restart)
+
+
+async def on_task_selected(callback: CallbackQuery, widget: Any, manager: DialogManager, item_id: str):
+    manager.dialog_data["chosen_task"] = int(item_id.split()[1])
+    await manager.switch_to(States.view_selected)
+
+
+async def task_data_getter(dialog_manager: DialogManager):
+    task = db.get_task(dialog_manager.dialog_data["chosen_task"])
+
+    return {
+        "selected_type": task.test_name,
+        "name": task.user_name,
+        "date": task.deadline,
+        "cost": db.get_test(task.type_id).cost,
+        "login": task.login_data.split()[0],
+        "password": task.login_data.split()[1]
+    }
+
 
 dialog = Dialog(
     Window(
@@ -240,6 +260,7 @@ dialog = Dialog(
                 item_id_getter=lambda task: f"task {task.task_id}",
                 items="tasks",
                 id="tasks",
+                on_click=on_task_selected,
             ),
             id="tasks_group",
             width=1,
@@ -307,5 +328,21 @@ dialog = Dialog(
         Const("Введите пароль 🔑"),
         TextInput(id="write_password", on_success=add_task),
         state=States.write_password
+    ),
+    Window(
+        Jinja(
+            "Данные по заказу\n"
+            "<b>Выбранная опция</b>: {{selected_type}}\n"
+            "<b>Фио</b>: {{name}}\n"
+            "<b>Дедлайн</b>: {{date}}\n"
+            "<b>Логин</b>: {{login}}\n"
+            "<b>Пароль</b>: {{password}}\n",
+        ),
+        SwitchTo(Const("Изменить логин"), state=States.change_login, id="change_login"),
+        SwitchTo(Const("Изменить пароль"), state=States.change_password, id="change_password"),
+        SwitchTo(Const("Назад"), state=States.tasks_menu, id="back"),
+        getter=get_order_data,
+        state=States.view_selected,
+        parse_mode="html",
     )
 )

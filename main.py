@@ -73,14 +73,13 @@ async def finish_task(message: Message, state: FSMContext, dialog_manager: Dialo
 
 @dp.message(SolverFilter(), Command("write"))
 async def write_to_user(message: Message, state: FSMContext, dialog_manager: DialogManager):
-    user_id = int(message.text.split()[1])
-    task_id = int(message.text.split()[2])
-    text = " ".join(message.text.split()[3:])
+    task_id = int(message.text.split()[1])
+    text = " ".join(message.text.split()[2:])
 
     task = db.get_task(task_id)
-    await message.bot.send_message(user_id, f"Сообщение по поводу заказа \"{task.test_name}\" с id={task_id}:\n{text}")
+    await message.bot.send_message(task.user_id,
+                                   f"Сообщение по поводу заказа \"{task.test_name}\" с id={task_id}:\n{text}")
     await message.answer("OK")
-
 
 @dp.callback_query(F.data.startswith("approve"))
 async def approve_task(callback: CallbackQuery):
@@ -90,7 +89,8 @@ async def approve_task(callback: CallbackQuery):
 
     db.update_task_approve_status(task_id, 3)
 
-    await callback.message.bot.send_message(task.user_id, text=f"Заказ \"{test.description}\" c id={task.task_id} подтвержден ✅")
+    await callback.message.bot.send_message(task.user_id,
+                                            text=f"Заказ \"{test.description}\" c id={task.task_id} подтвержден ✅")
     await callback.message.bot.send_document(
         chat_id=callback.message.chat.id,
         document=callback.message.document.file_id,
