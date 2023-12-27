@@ -156,8 +156,9 @@ class Database:
         return Test(test[0], test[1], test[2])
 
     def get_test_list(self):
-        self.cursor.execute('SELECT * FROM Tests WHERE available!=0')
+        self.cursor.execute('SELECT * FROM Tests')
         tests = list(map(lambda x: Test(*x), self.cursor.fetchall()))
+        tests = list(filter(lambda test: test.available, tests))
         return tests
 
     # endregion
