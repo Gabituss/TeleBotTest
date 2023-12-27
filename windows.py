@@ -204,7 +204,7 @@ async def on_task_selected(callback: CallbackQuery, widget: Any, manager: Dialog
     await manager.switch_to(States.view_selected)
 
 
-async def task_data_getter(dialog_manager: DialogManager):
+async def task_data_getter(dialog_manager: DialogManager, **kwargs):
     task = db.get_task(dialog_manager.dialog_data["chosen_task"])
 
     return {
