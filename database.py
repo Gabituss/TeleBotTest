@@ -142,7 +142,6 @@ class Database:
 
     def remove_test(self, test_id):
         self.connection.execute('UPDATE Tests SET available=(?) WHERE test_id=(?)', (False, test_id))
-        self.connection.execute('DELETE FROM Tests WHERE test_id=(?)', (test_id,))
         self.connection.commit()
 
     def update_test(self, test_id, test: Test):
