@@ -154,10 +154,10 @@ class Database:
         test = self.cursor.fetchone()
         return Test(test[0], test[1], test[2])
 
-    def get_test_list(self):
+    def get_test_list(self, is_all=False):
         self.cursor.execute('SELECT * FROM Tests')
         tests = list(map(lambda x: Test(*x), self.cursor.fetchall()))
-        tests = list(filter(lambda test: test.available, tests))
+        tests = list(filter(lambda test: test.available or is_all, tests))
         return tests
 
     # endregion
