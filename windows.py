@@ -203,6 +203,7 @@ async def on_task_selected(callback: CallbackQuery, widget: Any, manager: Dialog
     manager.dialog_data["chosen_task"] = int(item_id.split()[1])
     await manager.switch_to(States.view_selected)
 
+
 async def change_login(message: Message, widget, dialog_manager: DialogManager, *_):
     new_login = dialog_manager.find("login").get_value()
     task = db.get_task(dialog_manager.dialog_data["chosen_task"])
@@ -210,12 +211,14 @@ async def change_login(message: Message, widget, dialog_manager: DialogManager, 
     db.update_task(task.task_id, task)
     await dialog_manager.switch_to(States.view_selected)
 
+
 async def change_password(message: Message, widget, dialog_manager: DialogManager, *_):
     new_password = dialog_manager.find("password").get_value()
     task = db.get_task(dialog_manager.dialog_data["chosen_task"])
     task.login_data = task.login_data.split()[0] + " " + new_password
     db.update_task(task.task_id, task)
     await dialog_manager.switch_to(States.view_selected)
+
 
 async def task_data_getter(dialog_manager: DialogManager, **kwargs):
     task = db.get_task(dialog_manager.dialog_data["chosen_task"])

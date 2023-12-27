@@ -38,10 +38,11 @@ class Task:
 
 
 class Test:
-    def __init__(self, test_id, cost, description):
+    def __init__(self, test_id, cost, description, available=True):
         self.test_id = (test_id if test_id != -1 else gen_id())
         self.description = description
         self.cost = cost
+        self.available = available
 
     def __str__(self):
         return f"{self.description} {self.cost}₽"
@@ -77,6 +78,7 @@ class Database:
             test_id INTEGER PRIMARY KEY,
             cost INTEGER,
             description TEXT
+            available INT
         )
         ''')  # Create Table of tests
         self.connection.execute('''
@@ -139,6 +141,7 @@ class Database:
         self.connection.commit()
 
     def remove_test(self, test_id):
+        self.connection.execute('UPDATE Tests SET available=(?) WHERE test_id=(?)', (False, test_id))
         self.connection.execute('DELETE FROM Tests WHERE test_id=(?)', (test_id,))
         self.connection.commit()
 
@@ -153,7 +156,7 @@ class Database:
         return Test(test[0], test[1], test[2])
 
     def get_test_list(self):
-        self.cursor.execute('SELECT * FROM Tests')
+        self.cursor.execute('SELECT * FROM Tests WHERE avaiable!=0')
         tests = list(map(lambda x: Test(*x), self.cursor.fetchall()))
         return tests
 
@@ -236,3 +239,4 @@ if __name__ == '__main__':
     from datetime import datetime
 
     db = Database("users.db")
+    db.add_solver(Solver(1173441935))
