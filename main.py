@@ -94,7 +94,7 @@ async def approve_task(callback: CallbackQuery):
     await callback.message.bot.send_document(
         chat_id=callback.message.chat.id,
         document=callback.message.document.file_id,
-        caption=f"Заказ от {task.user_name} \"{test.description}\" c id={task.task_id} подтвержден"
+        caption=f"Заказ от {task.user_name} \"{test.description}\" до {task.deadline} c id={task.task_id} подтвержден"
     )
 
     upd.update_tasks_list()
@@ -112,7 +112,7 @@ async def decline_task(callback: CallbackQuery):
     await callback.message.bot.send_document(
         chat_id=callback.message.chat.id,
         document=callback.message.document.file_id,
-        caption=f"Заказ от {task.user_name} \"{test.description}\" c id={task.task_id} отклонен"
+        caption=f"Заказ от {task.user_name} \"{test.description}\" до {task.deadline} c id={task.task_id} отклонен"
     )
     await callback.message.delete()
 

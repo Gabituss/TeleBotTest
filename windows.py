@@ -160,7 +160,7 @@ async def add_task(message: Message, widget, dialog_manager: DialogManager, *_):
     builder.add(
         types.InlineKeyboardButton(text="Отклонить", callback_data=f"decline {dialog_manager.dialog_data['id']}"))
     await message.bot.send_document(MANAGER_ID, dialog_manager.dialog_data["file_id"], caption=
-    f"Заказ от {data['name']} \"{data['description']}\" за {data['cost']}₽\n c id={dialog_manager.dialog_data['id']}",
+    f"Заказ от {data['name']} \"{data['description']}\" за {data['cost']}₽\n до {data['date']} c id={dialog_manager.dialog_data['id']}",
                                     reply_markup=builder.as_markup())
 
     await message.answer(f"❤Благодарим Вас за покупку❤️\n\n✍🏼Тест будет выполнен до конца дедлайна✍🏼\n"
