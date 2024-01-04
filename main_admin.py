@@ -22,7 +22,6 @@ from filters import SolverFilter
 bot = Bot(token=ADMIN_BOT_TOKEN)
 dp = Dispatcher(storage=MemoryStorage())
 db = Database("users.db")
-upd = worksheet_updater.Updater("telesolve.json", "users.db")
 
 
 @dp.message(SolverFilter(), Command("start"))
@@ -48,5 +47,5 @@ async def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, filename="admin.log", filemode="w")
     asyncio.run(main())
