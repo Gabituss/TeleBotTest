@@ -42,8 +42,13 @@ async def menu(message: Message, state: FSMContext, dialog_manager: DialogManage
     await dialog_manager.start(States.after_restart, mode=StartMode.RESET_STACK)
 
 
-@dp.message(SolverFilter(), Command("erase"))
+@dp.message(SolverFilter(), Command("clear"))
 async def erase(message: Message, state: FSMContext, dialog_manager: DialogManager):
+    tasks = db.get_all_tasks()
+    for task in tasks:
+        if task.mark > 0:
+            db.mark_task_solved(task.task_id)
+    upd.update_tasks_list()
     await message.answer("OK")
 
 

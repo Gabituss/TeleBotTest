@@ -202,6 +202,10 @@ class Database:
         self.connection.execute('UPDATE Tasks SET mark=(?) WHERE task_id=(?)', (mark, task_id))
         self.connection.commit()
 
+    def mark_task_solved(self, task_id):
+        self.connection.execute('UPDATE Tasks SET deadline=(?) WHERE task_id=(?)', ("2000-01-01 00:00", task_id))
+        self.connection.commit()
+
     def update_task_approve_status(self, task_id, status):
         self.connection.execute('UPDATE Tasks SET approved=(?) WHERE task_id=(?)', (status, task_id))
         self.connection.commit()

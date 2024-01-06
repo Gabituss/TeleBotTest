@@ -32,10 +32,10 @@ def compare(a: Task, b: Task):
 
 
 def check(task: Task):
-    dt = date.today()
+    date2 = date.fromisoformat("2000-01-01")
     date1 = date.fromisoformat(task.deadline.split()[0])
 
-    return True
+    return date1 != date2
 
 
 def clear(sheet):
