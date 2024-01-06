@@ -35,7 +35,7 @@ def check(task: Task):
     dt = date.today()
     date1 = date.fromisoformat(task.deadline.split()[0])
 
-    return date1 >= dt
+    return True
 
 
 def clear(sheet):
