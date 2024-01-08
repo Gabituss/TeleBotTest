@@ -26,6 +26,8 @@ def compare(a: Task, b: Task):
     if a.mark == -1 and b.mark == 0:
         return -1
 
+    a.deadline = a.deadline.replace(".", ":")
+    b.deadline = a.deadline.replace(".", ":")
     date1 = datetime.strptime(a.deadline, '%Y-%m-%d %H:%M')
     date2 = datetime.strptime(b.deadline, '%Y-%m-%d %H:%M')
     return -1 if date1 < date2 else 1
