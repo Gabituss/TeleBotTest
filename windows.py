@@ -180,6 +180,10 @@ async def receipt_handler(message: Message, message_input: MessageInput, manager
     manager.dialog_data["file_id"] = message.document.file_id
     await manager.switch_to(States.write_login)
 
+async def wrong_handler(message: Message, message_input: MessageInput, manager: DialogManager):
+    data = await get_order_data(manager)
+    await message.answer("Мы принимаем чек только файлом :(")
+
 
 async def decline_purchase(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     dialog_manager.dialog_data["finished"] = False
@@ -332,6 +336,7 @@ dialog = Dialog(
             "🤔 В случае возникновения вопросов обратитесь к менеджеру с указанием id заказа 🤔"
         ),
         MessageInput(receipt_handler, content_types=[ContentType.DOCUMENT]),
+        MessageInput(wrong_handler),
         getter=get_order_data,
         state=States.pay,
         parse_mode="html",
